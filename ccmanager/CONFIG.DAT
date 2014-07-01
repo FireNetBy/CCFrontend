@@ -1,0 +1,11 @@
+ccexe =    C:\ccminer-v1.2\x86\ccminer.exe
+cudaexe =    C:\cudaminer-2014-02-28\x86\cudaminer.exe
+cudaarg =    -s 10 --algo=scrypt:2048 -o stratum+tcp://us-east.multipool.us:12222 -O donalddevun.1:12345 -l T5x24 -C 1 -H 2
+cudaarg =    -s 10 --algo=scrypt:2048 -o stratum+tcp://vertsquad.com:3333 -u donalddevun.1 -p 12345
+cudaarg = -a scrypt-jane:CACH -l t64x1 -b 4096 -m 1 -i 0 -H 2 -o stratum+tcp://stratum.ultracoinpool.info:3333 -O donalddevun.1:12345
+ccarg =    --algo=x11 -o stratum+tcp://us-east2.multipool.us:11111 -u donalddevun.1 -p 12345
+ccarg =    --algo=x11 -o stratum+tcp://stratum.nicehash.com:3336 -u 1Mw35cSi2PAvpBi1ABEAuibMW7yB4cZGfN -p p=0.3;d=0.04
+ccarg =    --algo=x11 -o stratum+tcp://stratum.nicehash.com:3336 -u 1Mw35cSi2PAvpBi1ABEAuibMW7yB4cZGfN -p p=0.4;d=0.04
+ccarg =    --algo=x11 -o stratum+tcp://useast.wafflepool.com:3331 -u 1Mw35cSi2PAvpBi1ABEAuibMW7yB4cZGfN -p d=0.04
+ccarg =    --algo=x11 -o stratum+tcp://drk.coinmine.pl:16090 -u donalddevun.1 -p 12345
+ccarg =    --algo=x11 -o stratum+tcp://us-east2.multipool.us:3375 -u donalddevun.1 -p 12345

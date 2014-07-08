@@ -1,4 +1,4 @@
-﻿namespace ccmanager
+﻿namespace ccfrontend
 {
     partial class Form1
     {
@@ -56,12 +56,19 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.serverIPLabel = new System.Windows.Forms.Label();
+            this.portTextBox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
+            this.panel6 = new System.Windows.Forms.Panel();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel5.SuspendLayout();
+            this.panel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -101,7 +108,7 @@
             this.outputTextBox.Name = "outputTextBox";
             this.outputTextBox.ReadOnly = true;
             this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.outputTextBox.Size = new System.Drawing.Size(789, 293);
+            this.outputTextBox.Size = new System.Drawing.Size(824, 293);
             this.outputTextBox.TabIndex = 5;
             this.outputTextBox.TextChanged += new System.EventHandler(this.outputTextBox_TextChanged);
             // 
@@ -323,11 +330,70 @@
             this.panel5.Size = new System.Drawing.Size(176, 22);
             this.panel5.TabIndex = 13;
             // 
+            // serverIPLabel
+            // 
+            this.serverIPLabel.AutoSize = true;
+            this.serverIPLabel.Location = new System.Drawing.Point(8, 0);
+            this.serverIPLabel.Name = "serverIPLabel";
+            this.serverIPLabel.Size = new System.Drawing.Size(10, 13);
+            this.serverIPLabel.TabIndex = 23;
+            this.serverIPLabel.Text = "-";
+            // 
+            // portTextBox
+            // 
+            this.portTextBox.Location = new System.Drawing.Point(8, 88);
+            this.portTextBox.Name = "portTextBox";
+            this.portTextBox.Size = new System.Drawing.Size(100, 20);
+            this.portTextBox.TabIndex = 24;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(8, 70);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(66, 13);
+            this.label4.TabIndex = 25;
+            this.label4.Text = "Change Port";
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(145, 85);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(75, 23);
+            this.button8.TabIndex = 26;
+            this.button8.Text = "Change";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(145, 60);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(75, 23);
+            this.button9.TabIndex = 27;
+            this.button9.Text = "Stop Server";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // panel6
+            // 
+            this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel6.Controls.Add(this.serverIPLabel);
+            this.panel6.Controls.Add(this.button8);
+            this.panel6.Controls.Add(this.button9);
+            this.panel6.Controls.Add(this.label4);
+            this.panel6.Controls.Add(this.portTextBox);
+            this.panel6.Location = new System.Drawing.Point(612, 89);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(227, 117);
+            this.panel6.TabIndex = 28;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(814, 533);
+            this.ClientSize = new System.Drawing.Size(851, 533);
+            this.Controls.Add(this.panel6);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
@@ -361,6 +427,8 @@
             this.panel4.PerformLayout();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -395,6 +463,12 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Label serverIPLabel;
+        private System.Windows.Forms.TextBox portTextBox;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Panel panel6;
     }
 }
 

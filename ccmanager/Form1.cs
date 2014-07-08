@@ -12,38 +12,46 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Management;
 using System.Text.RegularExpressions;
+using System.Net;
 
-namespace ccmanager
+namespace ccfrontend
 {
     public partial class Form1 : Form
     {
         const int MAX_LINES = 150;
+        int serverPort = 8000;
+        static bool serverRunning = true;
         String filename = "";
-        String args = "";
+        static String args = "";
         
         const String ARGS_FILE = "CONFIG.DAT";
         const int RETRY_FAILED_AFTER = 30; // Time in minutes to wait before retrying the first pool after a failover
         const int FAILOVER_AFTER = 3; // number of failed attempts before failover
-        
+
+        MyHttpServer myHttp;
+
         String argsFile;
         String applicationDir;
         Process proc;
         int failedAttempts = 0;
-        bool inFailover = false;
+        static bool inFailover = false;
         int lastRetryFirstPool = 0;
-        bool cudaClient = true;
+        static bool cudaClient = true;
         String cudaExe = "";
         String ccExe = "";
-        int thisMin = 0;
-        int yaysThisMin = 0;
-        int minutesRunning = 0;
-        int failovers = 0;
-        int yay = 0;
-        int boo = 0;
-        List<String> ccArgs = new List<String>();
-        List<String> cudaArgs = new List<String>();
-        List<int> acceptedList = new List<int>();
-        bool running = false;
+        
+        static int thisMin = 0;
+        static int yaysThisMin = 0;
+        static int minutesRunning = 0;
+        static int failovers = 0;
+        static int yay = 0;
+        static int boo = 0;
+        static double percentAccepted = 0;
+        static List<String> outputList = new List<String>();
+        static List<String> ccArgs = new List<String>();
+        static List<String> cudaArgs = new List<String>();
+        static List<int> acceptedList = new List<int>();
+        static bool running = false;
         static List<double> hashRateList = new List<double>();
         static List<int> minList = new List<int>();
         public Form1()
@@ -133,6 +141,7 @@ namespace ccmanager
             {
                 writer.WriteLine("ccexe = " + ccExe);
                 writer.WriteLine("cudaexe = " + cudaExe);
+                writer.WriteLine("serverport = " + serverPort.ToString());
                 foreach (String arg in cudaArgs)
                 {
                     writer.WriteLine("cudaarg = " + arg);
@@ -219,7 +228,9 @@ namespace ccmanager
                               {
                                   var lines = this.outputTextBox.Lines;
                                   var newLines = lines.Skip(numOfLines);
+                                  
                                   this.outputTextBox.Lines = newLines.ToArray();
+                                  outputList = this.outputTextBox.Lines.ToList();
                                   outputTextBox.Focus();
                                   outputTextBox.SelectionStart = outputTextBox.Text.Length;
                                   outputTextBox.SelectionLength = 0;
@@ -232,6 +243,7 @@ namespace ccmanager
                           }
                         ));
                     String data = e.Data;
+                    
                     if (data.Contains("retry after")) {
                         failedAttempts++;
                     }
@@ -256,7 +268,6 @@ namespace ccmanager
                     {
                         boo++;
                     }
-                    double percentAccepted = 0;
                     int totalTried = yay + boo;
                     if (totalTried > 0) {
                         percentAccepted = ((double)yay / (double)totalTried) * 100;
@@ -375,7 +386,11 @@ namespace ccmanager
                     else if (command == "cudaarg") {
                         cudaArgs.Add(arg);
                     }
-
+                    else if (command == "serverport")
+                    {
+                        serverPort = int.Parse(arg);
+                        
+                    }
                     line = reader.ReadLine();
                 }
                 reader.Close();
@@ -389,8 +404,82 @@ namespace ccmanager
                     comboBox1.SelectedIndex = 0;
                 }
                 Application.ApplicationExit += new EventHandler(this.OnApplicationExit);
+                startServer();
+                portTextBox.Text = serverPort.ToString();
             }
-            catch { };
+
+
+                
+            catch { }
+
+            
+        }
+
+        public void startServer() {
+            try
+            {
+                string localIP = "?";
+                IPHostEntry host;
+                host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (IPAddress ip in host.AddressList)
+                {
+                    if (ip.AddressFamily.ToString() == "InterNetwork")
+                    {
+                        localIP = ip.ToString();
+                    }
+                }
+
+                HTTPGet req = new HTTPGet();
+                req.Request("http://checkip.dyndns.org");
+                string[] res = req.ResponseBody.Split(':');
+                string[] finalRes = res[1].Split('<');
+                string extIP = finalRes[0].Trim();
+
+                serverIPLabel.Text = "HTTP Monitor Server: Running\n\nhttp://" + localIP + ":" + serverPort.ToString() + "\nhttp://" + extIP + ":" + serverPort.ToString();
+
+                String paramString = "http://*:" + serverPort.ToString() + "/";
+                myHttp = new MyHttpServer(SendResponse, paramString);
+                myHttp.Run();
+            }
+            catch { }
+
+        }
+        public static string SendResponse(HttpListenerRequest request)
+        {
+            String outputString = String.Format("<HTML><HEAD><TITLE>CCMiner/CudaMiner Frontend</TITLE></HEAD><BODY><p>{0}<p>", DateTime.Now);
+            if (!running)
+            {
+                outputString += "Not Running.";
+            }
+            else
+            {
+                String acceptRate = "0.00";
+                if (acceptedList.Count > 0)
+                {
+                    acceptRate = acceptedList.Average().ToString("0.00");
+                }
+                outputString += "Running ";
+                if (cudaClient)
+                {
+                    outputString += "CudaMiner<p>";
+                }
+                else
+                {
+                    outputString += "CCMiner<p>";
+                }
+                outputString += "Args: " + args + "<p>";
+                outputString += "5 Minute Average: " + hashRateList.Average().ToString("0.00") + " KHash/Second <p> " +  acceptRate + " shares per minute (" + percentAccepted.ToString("0.00") + " % Accepted)<p>";
+                foreach (String line in outputList)
+                {
+                    outputString += line + "<br>";
+                }
+               
+                
+                outputString += "</BODY></HTML>";
+
+            }
+            return outputString;
+
         }
 
         private void OnApplicationExit(object sender, EventArgs e)
@@ -660,6 +749,43 @@ namespace ccmanager
                 RewriteConfig();
             }
 
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            myHttp.Stop();
+            try
+            {
+                serverPort = int.Parse(portTextBox.Text);
+                RewriteConfig();
+                startServer();
+            }
+            catch { }
+
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            serverRunning = !serverRunning;
+            if (!serverRunning)
+            {
+                try
+                {
+                    myHttp.Stop();
+                    serverIPLabel.Text = "HTTP Monitor Server: Not Running";
+                    button9.Text = "Start Server";
+                }
+                catch { }
+            }
+            else
+            {
+                try
+                {
+                    button9.Text = "Stop Server";
+                    startServer();
+                }
+                catch { }
+            }
         }
     }
  

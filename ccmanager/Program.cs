@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ccmanager
+namespace ccfrontend
 {
     static class Program
     {
